@@ -8,6 +8,14 @@ import "../../modifiers/FromContract.sol";
  */
 contract ERC20StandardData is FromContract {
 
+
+    /*
+
+    AUDIT: In general when using public blockchain no data is ever private regardless of the modifiers. 
+    Thus the general rule is to basically keep almost all of your fields (IMPORTANT: not methods) public 
+    as it atleast generates for you getter methods and allows you to write less code. Therefore you might opt for
+    making the three fields public and removing the getX methods and leaving the setters only
+    */
     mapping(address => uint256) internal balances;
 
     mapping(address => mapping (address => uint256)) private allowed;

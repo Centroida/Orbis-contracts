@@ -135,9 +135,15 @@ contract ERC20Extended is FreezableToken, PausableToken, BurnableToken, Mintable
     * @dev Send Ether to buy tokens at the current token sell price.
     * @notice Throws on failure.
     */
-    function buy() payable whenNotPaused public {
-        uint256 amount = msg.value.div(sellPrice);
-        _transfer(this, msg.sender, amount);
+    function buy() payable whenNotPaused public { // AUDIT: It's best to keep the returns (bool success) that you have started
+
+        /* AUDIT: There might be a case for setting minimal contribution. 
+            In general try different cases of the sell price and wei sent. There might be some of them that break the math as there are no floating points.
+            The floating point problem is generally resolved by adding decimals and/or minimal contribution.
+            If you are basing some logic on any assumption like 'The price will always be > than 1 eth or the contribution will always be > than the sellPrice' 
+            it is probably good idea to include them in the code */
+        uint256 amount = msg.value.div(sellPrice); // AUDIT: There might be a reminder you can get it by modulus division and transfer it back
+        _transfer(this, msg.sender, amount); // AUDIT: Just in case wrap this in assert
     }
     
     /**
@@ -145,10 +151,10 @@ contract ERC20Extended is FreezableToken, PausableToken, BurnableToken, Mintable
     * @param _amount The amount to sell.
     * @notice Throws on failure.
     */
-    function sell(uint256 _amount) whenNotPaused public {
+    function sell(uint256 _amount) whenNotPaused public { // AUDIT: It's best to keep the returns (bool success) that you have started
         uint256 toBeTransferred = _amount.mul(buyPrice);
         require(this.balance >= toBeTransferred);
-        require(_transfer(msg.sender, this, _amount));
+        require(_transfer(msg.sender, this, _amount)); // AUDIT: It's a bit better to use assert for success validations and keep require for user input validation
         msg.sender.transfer(toBeTransferred);
     }
 

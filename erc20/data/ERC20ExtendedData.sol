@@ -9,7 +9,9 @@ import "./ERC20StandardData.sol";
 contract ERC20ExtendedData is ERC20StandardData {
     mapping(address => bool) private frozenAccounts;
 
-    function getFrozenAccount(address _target) public view returns (bool isFrozen, uint256 amount) {
+    function getFrozenAccount(address _target) public view returns (bool isFrozen, uint256 amount) { /* AUDIT:  There might be a case for returning only if the account is frozen (thus might need renaming)
+                                                                                                                as there is other constant methods that will return the balance if it is needed. 
+                                                                                                                This will reduce the complexity in the imlementation */
         return (frozenAccounts[_target], balances[_target]);
     }
 

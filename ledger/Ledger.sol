@@ -13,12 +13,12 @@ contract Ledger is FromContract, Destroyable {
 
     LedgerDataStorage internal ledgerDataStorage;
 
-    function Ledger (address ledgerDataStorageAddress) public {
+    function Ledger (address ledgerDataStorageAddress) public { // AUDIT: require for ledgerDataStorageAddress to be non-zero
         ledgerDataStorage = LedgerDataStorage(ledgerDataStorageAddress);
     }
 
     function addTransaction(address _from, address _to, uint _tokens) public fromContract returns (bool) {
-        ledgerDataStorage.addTransaction(_from, _to, _tokens);
+        ledgerDataStorage.addTransaction(_from, _to, _tokens); // AUDIT: Wrap this in assert()
         return true;
     }
 
