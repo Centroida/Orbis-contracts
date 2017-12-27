@@ -8,14 +8,15 @@ contract LedgerData is FromContract {
     using SafeMath for uint256;
 
     struct Transaction {
-        uint id;
+        uint id; // AUDIT: Save storage space by not using this field as you already have this data in the key
         address from;
         address to;
-        uint tokens;
+        uint tokens; // AUDIT: Keep using uint256 as you've started with it in the ERC20 things
     }
 
-    mapping(uint => Transaction) private transactions;
-    uint private transactionsLength = 0;
+    mapping(uint => Transaction) private transactions; // AUDIT: Make this public and you wont need the method for getting Transaction as it is auto generated
+
+    uint private transactionsLength = 0; // AUDIT: Make this public and you wont need the method for getting transaction length as it is auto generated
 
     function getTransaction(uint _index) public view returns (uint, address, address, uint) {
         return (transactions[_index].id, transactions[_index].from, transactions[_index].to, transactions[_index].tokens);
@@ -35,7 +36,7 @@ contract LedgerData is FromContract {
         return transactionsLength;
     }
 
-    function setTransactionsLength(uint _value) internal returns (bool) {
+    function setTransactionsLength(uint _value) internal returns (bool) { // AUDIT: Making the transactionsLength public will render this method obsolete
         transactionsLength = _value;
         return true;
     }

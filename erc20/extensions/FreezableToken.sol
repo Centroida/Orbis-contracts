@@ -48,12 +48,13 @@ contract FreezableToken is ERC20Standard, Ownable {
      * @return amount Balance of the account.
      */
     function isAccountFrozen(address _target) public view returns (bool isFrozen, uint256 amount) {
-        return dataStorage.getFrozenAccount(_target);
+        return dataStorage.getFrozenAccount(_target); // AUDIT: If you remove the amount from the dataStorage method you might use dataStorage.getBalance() to get the second param and still keep it all constant
     }
 
+    /* AUDIT: It might be a bit better to do this logic with a modifier onlyNotFrozen */
     function _transfer(address _from, address _to, uint256 _value) internal returns (bool success) {
         bool isFromFrozen;
-        (isFromFrozen,) = dataStorage.getFrozenAccount(_from);
+        (isFromFrozen,) = dataStorage.getFrozenAccount(_from); // AUDIT: If you remove the amount from the dataStorage method the three rows can be done in 1 here and below
         require(!isFromFrozen);
 
         bool isToFrozen;

@@ -82,7 +82,7 @@ contract ERC20Standard {
     * @param _value The amount to be transferred.
     * @return success True if the transfer was successful, or throws.
     */
-    function transfer(address _to, uint256 _value) public returns (bool success) {
+    function transfer(address _to, uint256 _value) public returns (bool success) { // AUDIT: In our case I would put requirement for greater than 0 value as someone might try to fill the ledger up with useless 0 value transactions
         return _transfer(msg.sender, _to, _value);
     }
 
@@ -93,7 +93,7 @@ contract ERC20Standard {
      * @param _value The amount to send.
      * @return success True if the transfer was successful, or throws.
      */    
-    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) { // AUDIT: Same as above
         uint256 allowed = dataStorage.getAllowance(_from, msg.sender);
         require(allowed >= _value);
 
